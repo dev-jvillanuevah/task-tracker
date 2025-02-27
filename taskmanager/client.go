@@ -3,17 +3,17 @@ package taskmanager
 import "time"
 
 type Client struct {
-	Tasks []Task
+	Tasks []*Task
 }
 
 func NewClient() *Client {
 	// TODO: read from the json file here
-	return &Client{make([]Task, 0)}
+	return &Client{Tasks: []*Task{}}
 }
 
 func (t *Client) Add(description string) int {
 	id := len(t.Tasks) + 1 // starts at 1
-	t.Tasks = append(t.Tasks, Task{
+	t.Tasks = append(t.Tasks, &Task{
 		ID:          id,
 		Description: description,
 		Status:      StatusToDo,
@@ -22,6 +22,6 @@ func (t *Client) Add(description string) int {
 	return id
 }
 
-func (t *Client) GetTasks() []Task {
+func (t *Client) ListTasks() []*Task {
 	return t.Tasks
 }

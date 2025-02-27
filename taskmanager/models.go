@@ -18,6 +18,19 @@ type Task struct {
 	UpdatedAt   time.Time
 }
 
+type UserCommand struct {
+	Command TrackCommand
+	Input1  any     // can be string, int or task status
+	Input2  *string // always a string
+}
+
 func (task *Task) ValidStatus() bool {
 	return task.Status == StatusToDo || task.Status == StatusInProgress || task.Status == StatusDone
+}
+
+func (userCommand *UserCommand) GetDescription() string {
+	if userCommand.Command == CommandUpdate {
+		return *userCommand.Input2
+	}
+	return userCommand.Input1.(string)
 }

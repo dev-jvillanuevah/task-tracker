@@ -4,27 +4,28 @@ import (
 	"bufio"
 	"fmt"
 	"os"
-	"strings"
 
 	"github.com/dev-jvillanuevah/task-tracker/taskmanager"
 )
 
 func main() {
 	scanner := bufio.NewScanner(os.Stdin)
-	// start taskmanager client
-	taskManagerClient := taskmanager.NewClient()
+	client := taskmanager.NewClient()
 	for {
 		fmt.Print("task-cli ")
 		scanner.Scan()
-		command := strings.TrimSpace(scanner.Text())
-		if command == "exit" {
+		userCommand, err := taskmanager.ParseUserInput(scanner.Text())
+		if err != nil {
+			fmt.Println(err)
+			break
+		}
+		if userCommand.Command == taskmanager.CommandExit {
 			fmt.Println("Exiting application...")
 			break
 		}
-		if command == "add" {
-			taskManagerClient.Add("some description")
+		if userCommand.Command == taskmanager.CommandAdd {
+			client.Add(userCommand.GetDescription())
 		}
-		fmt.Printf("tasks: %+v\n", taskManagerClient.GetTasks())
 	}
 	fmt.Println("Application terminated")
 }
