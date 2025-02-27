@@ -22,6 +22,6 @@ func (t *Client) Add(description string) int {
 	return id
 }
 
-func (t *Client) ListTasks() []*Task {
+func (t *Client) GetTasks() []*Task {
 	return t.Tasks
 }

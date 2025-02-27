@@ -19,9 +19,9 @@ type Task struct {
 }
 
 type UserCommand struct {
-	Command TrackCommand
-	Input1  any     // can be string, int or task status
-	Input2  *string // always a string
+	Command     TrackCommand
+	Input1      any // can be string, int or task status
+	Description *string
 }
 
 func (task *Task) ValidStatus() bool {
@@ -30,7 +30,7 @@ func (task *Task) ValidStatus() bool {
 
 func (userCommand *UserCommand) GetDescription() string {
 	if userCommand.Command == CommandUpdate {
-		return *userCommand.Input2
+		return *userCommand.Description
 	}
 	return userCommand.Input1.(string)
 }

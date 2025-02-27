@@ -15,10 +15,11 @@ func ParseUserInput(input string) (*UserCommand, error) {
 	switch command {
 	case CommandAdd:
 		description := strings.Join(s[1:], " ")
+		description = strings.ReplaceAll(description, `"`, "")
 		userCommand.Input1 = description
 	case CommandExit:
 	default:
-		return nil, errors.New(fmt.Sprintf("invalid command: %s\n", command))
+		return nil, errors.New(fmt.Sprintf("invalid command: %s", command))
 	}
 	return userCommand, nil
 }
