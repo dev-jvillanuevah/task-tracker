@@ -26,6 +26,11 @@ func main() {
 		if userCommand.Command == taskmanager.CommandAdd {
 			client.Add(userCommand.GetDescription())
 		}
+		err = client.WriteFile()
+		if err != nil {
+			fmt.Println(err)
+			break
+		}
 	}
 	fmt.Println("Application terminated")
 }
