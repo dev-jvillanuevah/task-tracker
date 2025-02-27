@@ -11,10 +11,15 @@ import (
 func main() {
 	scanner := bufio.NewScanner(os.Stdin)
 	client := taskmanager.NewClient()
+	err := client.ReadFile()
+	if err != nil {
+		fmt.Println(err)
+	}
 	for {
 		fmt.Print("task-cli ")
 		scanner.Scan()
-		userCommand, err := taskmanager.ParseUserInput(scanner.Text())
+		var userCommand *taskmanager.UserCommand
+		userCommand, err = taskmanager.ParseUserInput(scanner.Text())
 		if err != nil {
 			fmt.Println(err)
 			break
@@ -25,6 +30,9 @@ func main() {
 		}
 		if userCommand.Command == taskmanager.CommandAdd {
 			client.Add(userCommand.GetDescription())
+		}
+		if userCommand.Command == taskmanager.CommandList {
+			client.ListTasks()
 		}
 		err = client.WriteFile()
 		if err != nil {

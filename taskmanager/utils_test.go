@@ -26,6 +26,15 @@ func TestParseUserInput(t *testing.T) {
 			errMessage: "",
 		},
 		{
+			name:  "valid input - list",
+			input: "list",
+			want: &UserCommand{
+				Command: CommandList,
+			},
+			wantErr:    false,
+			errMessage: "",
+		},
+		{
 			name:  "valid input - exit",
 			input: "exit",
 			want: &UserCommand{

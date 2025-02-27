@@ -28,6 +28,19 @@ func (task *Task) ValidStatus() bool {
 	return task.Status == StatusToDo || task.Status == StatusInProgress || task.Status == StatusDone
 }
 
+func (task *Task) GetStatus() string {
+	switch task.Status {
+	case StatusToDo:
+		return "To Do"
+	case StatusDone:
+		return "Done"
+	case StatusInProgress:
+		return "In Progress"
+	default:
+		return "Unknown"
+	}
+}
+
 func (userCommand *UserCommand) GetDescription() string {
 	if userCommand.Command == CommandUpdate {
 		return *userCommand.Description

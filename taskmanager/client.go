@@ -12,7 +12,6 @@ type Client struct {
 }
 
 func NewClient() *Client {
-	// TODO: read from the json file here
 	return &Client{Tasks: []*Task{}}
 }
 
@@ -31,6 +30,12 @@ func (t *Client) GetTasks() []*Task {
 	return t.Tasks
 }
 
+func (t *Client) ListTasks() {
+	for _, task := range t.Tasks {
+		fmt.Printf("%s - %s\n", task.Description, task.GetStatus())
+	}
+}
+
 func (t *Client) WriteFile() error {
 	file, err := os.Create("tasks.json")
 	if err != nil {
@@ -41,6 +46,19 @@ func (t *Client) WriteFile() error {
 	encoder.SetIndent("", "  ")
 	if err = encoder.Encode(t.Tasks); err != nil {
 		return fmt.Errorf("error writing tasks.json: %w", err)
+	}
+	return nil
+}
+
+func (t *Client) ReadFile() error {
+	file, err := os.Open("tasks.json")
+	if err != nil {
+		return fmt.Errorf("error opening tasks.json: %w", err)
+	}
+	defer file.Close()
+	decoder := json.NewDecoder(file)
+	if err = decoder.Decode(&t.Tasks); err != nil {
+		return fmt.Errorf("error reading tasks.json: %w", err)
 	}
 	return nil
 }
