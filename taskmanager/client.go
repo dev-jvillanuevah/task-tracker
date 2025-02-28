@@ -57,7 +57,7 @@ func (t *Client) findTask(id int) *common.Task {
 }
 
 func (t *Client) DeleteTask(id int) error {
-	t.filterTasks(id)
+	t.deleteTask(id)
 	err := t.saveTasks()
 	if err != nil {
 		return fmt.Errorf("error saving tasks: %w", err)
@@ -66,7 +66,7 @@ func (t *Client) DeleteTask(id int) error {
 	return nil
 }
 
-func (t *Client) filterTasks(id int) {
+func (t *Client) deleteTask(id int) {
 	var newTasks []*common.Task
 	for _, task := range t.tasks {
 		if task.ID == id {
@@ -81,10 +81,29 @@ func (t *Client) GetTasks() []*common.Task {
 	return t.tasks
 }
 
-func (t *Client) ListTasks() {
-	for _, task := range t.tasks {
+func (t *Client) ListTasks(status *common.TaskStatus) {
+	tasksToShow := t.tasks
+	if status != nil {
+		tasksToShow = t.filterTasksByStatus(status)
+	}
+	if len(tasksToShow) == 0 {
+		fmt.Println("No tasks found")
+		return
+	}
+	for _, task := range tasksToShow {
 		fmt.Printf("%d - %s - %s\n", task.ID, task.Description, task.GetStatus())
 	}
+}
+
+func (t *Client) filterTasksByStatus(status *common.TaskStatus) []*common.Task {
+	var tasks []*common.Task
+	for _, task := range t.tasks {
+		if &task.Status != status {
+			continue
+		}
+		tasks = append(tasks, task)
+	}
+	return tasks
 }
 
 func (t *Client) saveTasks() error {
