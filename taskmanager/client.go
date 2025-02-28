@@ -32,6 +32,7 @@ func (t *Client) AddTask(description string) (int, error) {
 	if err != nil {
 		return 0, fmt.Errorf("error saving tasks: %w", err)
 	}
+	fmt.Printf("Task added successfully (%d)\n", id)
 	return id, nil
 }
 
@@ -42,6 +43,7 @@ func (t *Client) UpdateTask(id int, description string) error {
 	if err != nil {
 		return fmt.Errorf("error saving tasks: %w", err)
 	}
+	fmt.Printf("Task updated successfully (%d)\n", id)
 	return nil
 }
 
