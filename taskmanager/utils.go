@@ -1,8 +1,8 @@
 package taskmanager
 
 import (
-	"errors"
 	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/dev-jvillanuevah/task-tracker/common"
@@ -19,10 +19,19 @@ func ParseUserInput(input string) (*common.UserCommand, error) {
 		description := strings.Join(s[1:], " ")
 		description = strings.ReplaceAll(description, `"`, "")
 		userCommand.Input1 = description
+	case common.CommandUpdate:
+		description := strings.Join(s[2:], " ")
+		description = strings.ReplaceAll(description, `"`, "")
+		id, err := strconv.Atoi(s[1])
+		if err != nil {
+			return nil, fmt.Errorf("invalid id %s", s[1])
+		}
+		userCommand.Input1 = id
+		userCommand.Description = &description
 	case common.CommandList:
 	case common.CommandExit:
 	default:
-		return nil, errors.New(fmt.Sprintf("invalid command: %s", command))
+		return nil, fmt.Errorf("invalid command: %s", command)
 	}
 	return userCommand, nil
 }

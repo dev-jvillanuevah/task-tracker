@@ -33,9 +33,18 @@ func main() {
 		}
 		switch userCommand.Command {
 		case common.CommandAdd:
-			_, addErr := taskManager.Add(userCommand.GetDescription())
+			_, addErr := taskManager.AddTask(userCommand.GetDescription())
 			if addErr != nil {
 				fmt.Println(addErr)
+				break
+			}
+		case common.CommandUpdate:
+			updateErr := taskManager.UpdateTask(
+				userCommand.GetID(),
+				userCommand.GetDescription(),
+			)
+			if updateErr != nil {
+				fmt.Println(updateErr)
 				break
 			}
 		case common.CommandList:

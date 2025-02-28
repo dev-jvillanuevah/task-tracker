@@ -11,3 +11,11 @@ const (
 	CommandDelete         TrackCommand = "delete"
 	CommandExit           TrackCommand = "exit"
 )
+
+type TaskStatus string
+
+const (
+	StatusToDo       TaskStatus = "todo"
+	StatusInProgress TaskStatus = "in-progress"
+	StatusDone       TaskStatus = "done"
+)
