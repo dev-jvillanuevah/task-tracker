@@ -14,41 +14,36 @@ func main() {
 	scanner := bufio.NewScanner(os.Stdin)
 	fileManager := filemanager.NewClient("tasks.json")
 	taskManager := taskmanager.NewClient(fileManager)
-	err := taskManager.LoadTasks()
-	if err != nil {
-		fmt.Println(err)
+	loadTasksErr := taskManager.LoadTasks()
+	if loadTasksErr != nil {
+		fmt.Println(loadTasksErr)
 	}
 	for {
 		fmt.Print("task-cli ")
 		scanner.Scan()
-		var userCommand *common.UserCommand
-		userCommand, err = taskmanager.ParseUserInput(scanner.Text())
-		if err != nil {
-			fmt.Println(err)
+		userCommand, parseInputErr := taskmanager.ParseUserInput(scanner.Text())
+		if parseInputErr != nil {
+			fmt.Println(parseInputErr)
 			break
 		}
 		if userCommand.Command == common.CommandExit {
 			fmt.Println("Exiting application...")
 			break
 		}
+		var err error
 		switch userCommand.Command {
 		case common.CommandAdd:
-			_, addErr := taskManager.AddTask(userCommand.GetDescription())
-			if addErr != nil {
-				fmt.Println(addErr)
-				break
-			}
+			err = taskManager.AddTask(userCommand.GetDescription())
 		case common.CommandUpdate:
-			updateErr := taskManager.UpdateTask(
-				userCommand.GetID(),
-				userCommand.GetDescription(),
-			)
-			if updateErr != nil {
-				fmt.Println(updateErr)
-				break
-			}
+			err = taskManager.UpdateTask(userCommand.GetID(), userCommand.GetDescription())
+		case common.CommandDelete:
+			err = taskManager.DeleteTask(userCommand.GetID())
 		case common.CommandList:
 			taskManager.ListTasks()
+		}
+		if err != nil {
+			fmt.Println(err)
+			break
 		}
 	}
 	fmt.Println("Application terminated")

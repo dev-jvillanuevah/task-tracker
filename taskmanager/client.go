@@ -20,7 +20,7 @@ func NewClient(fileManager *filemanager.Client) *Client {
 	}
 }
 
-func (t *Client) AddTask(description string) (int, error) {
+func (t *Client) AddTask(description string) error {
 	id := len(t.tasks) + 1 // starts at 1
 	t.tasks = append(t.tasks, &common.Task{
 		ID:          id,
@@ -30,10 +30,10 @@ func (t *Client) AddTask(description string) (int, error) {
 	})
 	err := t.saveTasks()
 	if err != nil {
-		return 0, fmt.Errorf("error saving tasks: %w", err)
+		return fmt.Errorf("error saving tasks: %w", err)
 	}
 	fmt.Printf("Task added successfully (%d)\n", id)
-	return id, nil
+	return nil
 }
 
 func (t *Client) UpdateTask(id int, description string) error {
@@ -54,6 +54,27 @@ func (t *Client) findTask(id int) *common.Task {
 		}
 	}
 	return nil
+}
+
+func (t *Client) DeleteTask(id int) error {
+	t.filterTasks(id)
+	err := t.saveTasks()
+	if err != nil {
+		return fmt.Errorf("error saving tasks: %w", err)
+	}
+	fmt.Printf("Task deleted successfully (%d)\n", id)
+	return nil
+}
+
+func (t *Client) filterTasks(id int) {
+	var newTasks []*common.Task
+	for _, task := range t.tasks {
+		if task.ID == id {
+			continue
+		}
+		newTasks = append(newTasks, task)
+	}
+	t.tasks = newTasks
 }
 
 func (t *Client) GetTasks() []*common.Task {

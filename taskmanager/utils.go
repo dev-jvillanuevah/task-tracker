@@ -28,6 +28,12 @@ func ParseUserInput(input string) (*common.UserCommand, error) {
 		}
 		userCommand.Input1 = id
 		userCommand.Description = &description
+	case common.CommandDelete:
+		id, err := strconv.Atoi(s[1])
+		if err != nil {
+			return nil, fmt.Errorf("invalid id %s", s[1])
+		}
+		userCommand.Input1 = id
 	case common.CommandList:
 	case common.CommandExit:
 	default:
