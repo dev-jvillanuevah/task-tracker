@@ -7,19 +7,24 @@ import (
 )
 
 type Client struct {
-	Filename string
+	filename string
 }
 
 func NewClient(filename string) *Client {
-	return &Client{Filename: filename}
+	return &Client{filename: filename}
 }
 
 func (f *Client) WriteFile(tasks any) error {
-	file, err := os.Create("tasks.json")
+	file, err := os.Create(f.filename)
 	if err != nil {
 		return fmt.Errorf("error creating tasks.json: %w", err)
 	}
-	defer file.Close()
+	defer func(file *os.File) {
+		err := file.Close()
+		if err != nil {
+
+		}
+	}(file)
 	encoder := json.NewEncoder(file)
 	encoder.SetIndent("", "  ")
 	if err = encoder.Encode(tasks); err != nil {
@@ -29,11 +34,16 @@ func (f *Client) WriteFile(tasks any) error {
 }
 
 func (f *Client) ReadFile(tasks any) error {
-	file, err := os.Open("tasks.json")
+	file, err := os.Open(f.filename)
 	if err != nil {
 		return fmt.Errorf("error opening tasks.json: %w", err)
 	}
-	defer file.Close()
+	defer func(file *os.File) {
+		err := file.Close()
+		if err != nil {
+			fmt.Println(err)
+		}
+	}(file)
 	decoder := json.NewDecoder(file)
 	if err = decoder.Decode(&tasks); err != nil {
 		return fmt.Errorf("error reading tasks.json: %w", err)
