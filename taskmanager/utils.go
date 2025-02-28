@@ -4,21 +4,23 @@ import (
 	"errors"
 	"fmt"
 	"strings"
+
+	"github.com/dev-jvillanuevah/task-tracker/common"
 )
 
-func ParseUserInput(input string) (*UserCommand, error) {
+func ParseUserInput(input string) (*common.UserCommand, error) {
 	s := strings.Split(input, " ")
-	command := TrackCommand(s[0])
-	userCommand := &UserCommand{
+	command := common.TrackCommand(s[0])
+	userCommand := &common.UserCommand{
 		Command: command,
 	}
 	switch command {
-	case CommandAdd:
+	case common.CommandAdd:
 		description := strings.Join(s[1:], " ")
 		description = strings.ReplaceAll(description, `"`, "")
 		userCommand.Input1 = description
-	case CommandList:
-	case CommandExit:
+	case common.CommandList:
+	case common.CommandExit:
 	default:
 		return nil, errors.New(fmt.Sprintf("invalid command: %s", command))
 	}

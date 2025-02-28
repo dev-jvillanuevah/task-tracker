@@ -3,6 +3,7 @@ package taskmanager
 import (
 	"testing"
 
+	"github.com/dev-jvillanuevah/task-tracker/common"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -10,15 +11,15 @@ func TestParseUserInput(t *testing.T) {
 	tests := []struct {
 		name       string
 		input      string
-		want       *UserCommand
+		want       *common.UserCommand
 		wantErr    bool
 		errMessage string
 	}{
 		{
 			name:  "valid input - add",
 			input: `add "Buy groceries"`,
-			want: &UserCommand{
-				Command:     CommandAdd,
+			want: &common.UserCommand{
+				Command:     common.CommandAdd,
 				Input1:      "Buy groceries",
 				Description: nil,
 			},
@@ -28,8 +29,8 @@ func TestParseUserInput(t *testing.T) {
 		{
 			name:  "valid input - list",
 			input: "list",
-			want: &UserCommand{
-				Command: CommandList,
+			want: &common.UserCommand{
+				Command: common.CommandList,
 			},
 			wantErr:    false,
 			errMessage: "",
@@ -37,8 +38,8 @@ func TestParseUserInput(t *testing.T) {
 		{
 			name:  "valid input - exit",
 			input: "exit",
-			want: &UserCommand{
-				Command: CommandExit,
+			want: &common.UserCommand{
+				Command: common.CommandExit,
 			},
 			wantErr:    false,
 			errMessage: "",

@@ -1,6 +1,8 @@
-package taskmanager
+package common
 
-import "time"
+import (
+	"time"
+)
 
 type TaskStatus string
 

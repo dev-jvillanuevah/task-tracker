@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+
+	"github.com/dev-jvillanuevah/task-tracker/common"
 )
 
 type Client struct {
@@ -14,7 +16,7 @@ func NewClient(filename string) *Client {
 	return &Client{filename: filename}
 }
 
-func (f *Client) WriteFile(tasks any) error {
+func (f *Client) WriteFile(tasks []*common.Task) error {
 	file, err := os.Create(f.filename)
 	if err != nil {
 		return fmt.Errorf("error creating tasks.json: %w", err)
@@ -33,7 +35,7 @@ func (f *Client) WriteFile(tasks any) error {
 	return nil
 }
 
-func (f *Client) ReadFile(tasks any) error {
+func (f *Client) ReadFile(tasks *[]*common.Task) error {
 	file, err := os.Open(f.filename)
 	if err != nil {
 		return fmt.Errorf("error opening tasks.json: %w", err)
