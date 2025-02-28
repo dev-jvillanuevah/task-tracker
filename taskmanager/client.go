@@ -1,18 +1,22 @@
 package taskmanager
 
 import (
-	"encoding/json"
 	"fmt"
-	"os"
 	"time"
+
+	"github.com/dev-jvillanuevah/task-tracker/filemanager"
 )
 
 type Client struct {
-	Tasks []*Task
+	Tasks       []*Task
+	FileManager *filemanager.Client
 }
 
-func NewClient() *Client {
-	return &Client{Tasks: []*Task{}}
+func NewClient(fileManager *filemanager.Client) *Client {
+	return &Client{
+		Tasks:       []*Task{},
+		FileManager: fileManager,
+	}
 }
 
 func (t *Client) Add(description string) int {
@@ -36,29 +40,18 @@ func (t *Client) ListTasks() {
 	}
 }
 
-func (t *Client) WriteFile() error {
-	file, err := os.Create("tasks.json")
+func (t *Client) SaveTasks() error {
+	err := t.FileManager.WriteFile(t.Tasks)
 	if err != nil {
-		return fmt.Errorf("error creating tasks.json: %w", err)
-	}
-	defer file.Close()
-	encoder := json.NewEncoder(file)
-	encoder.SetIndent("", "  ")
-	if err = encoder.Encode(t.Tasks); err != nil {
-		return fmt.Errorf("error writing tasks.json: %w", err)
+		return fmt.Errorf("file manager error: %w\n", err)
 	}
 	return nil
 }
 
-func (t *Client) ReadFile() error {
-	file, err := os.Open("tasks.json")
+func (t *Client) LoadTasks() error {
+	err := t.FileManager.ReadFile(t.Tasks)
 	if err != nil {
-		return fmt.Errorf("error opening tasks.json: %w", err)
-	}
-	defer file.Close()
-	decoder := json.NewDecoder(file)
-	if err = decoder.Decode(&t.Tasks); err != nil {
-		return fmt.Errorf("error reading tasks.json: %w", err)
+		return fmt.Errorf("file manager error: %w\n", err)
 	}
 	return nil
 }

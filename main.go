@@ -5,13 +5,15 @@ import (
 	"fmt"
 	"os"
 
+	"github.com/dev-jvillanuevah/task-tracker/filemanager"
 	"github.com/dev-jvillanuevah/task-tracker/taskmanager"
 )
 
 func main() {
 	scanner := bufio.NewScanner(os.Stdin)
-	client := taskmanager.NewClient()
-	err := client.ReadFile()
+	fileManager := filemanager.NewClient("tasks.json")
+	client := taskmanager.NewClient(fileManager)
+	err := client.LoadTasks()
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -34,7 +36,7 @@ func main() {
 		if userCommand.Command == taskmanager.CommandList {
 			client.ListTasks()
 		}
-		err = client.WriteFile()
+		err = client.SaveTasks()
 		if err != nil {
 			fmt.Println(err)
 			break
