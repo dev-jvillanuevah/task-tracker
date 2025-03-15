@@ -40,7 +40,7 @@ func ParseUserInput(input string) (*common.UserCommand, error) {
 		if len(s) > 1 {
 			userCommand.Input1 = common.TaskStatus(s[1])
 		}
-	case common.CommandExit:
+	case common.CommandExit, common.CommandHelp:
 	default:
 		return nil, fmt.Errorf("invalid command: %s", command)
 	}

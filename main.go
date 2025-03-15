@@ -49,6 +49,8 @@ func main() {
 			err = taskManager.DeleteTask(userCommand.GetID())
 		case common.CommandList:
 			err = taskManager.ListTasks(userCommand.GetTaskStatus())
+		case common.CommandHelp:
+			fmt.Println(common.HelpMessage)
 		}
 		if err != nil {
 			fmt.Println(err)
