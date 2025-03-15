@@ -8,6 +8,7 @@ import (
 	"github.com/dev-jvillanuevah/task-tracker/common"
 	"github.com/dev-jvillanuevah/task-tracker/filemanager"
 	"github.com/dev-jvillanuevah/task-tracker/taskmanager"
+	"github.com/fatih/color"
 )
 
 func main() {
@@ -19,7 +20,11 @@ func main() {
 		fmt.Println(loadTasksErr)
 	}
 	for {
+		// For green color for "task-cli" text
+		color.Set(color.FgGreen)
 		fmt.Print("task-cli ")
+		color.Unset()
+		color.Set(color.FgYellow)
 		scanner.Scan()
 		userCommand, parseInputErr := taskmanager.ParseUserInput(scanner.Text())
 		if parseInputErr != nil {
@@ -36,10 +41,14 @@ func main() {
 			err = taskManager.AddTask(userCommand.GetDescription())
 		case common.CommandUpdate:
 			err = taskManager.UpdateTask(userCommand.GetID(), userCommand.GetDescription())
+		case common.CommandMarkInProgress:
+			err = taskManager.MarkInProgress(userCommand.GetID())
+		case common.CommandMarkDone:
+			err = taskManager.MarkDone(userCommand.GetID())
 		case common.CommandDelete:
 			err = taskManager.DeleteTask(userCommand.GetID())
 		case common.CommandList:
-			taskManager.ListTasks(userCommand.GetTaskStatus())
+			err = taskManager.ListTasks(userCommand.GetTaskStatus())
 		}
 		if err != nil {
 			fmt.Println(err)
@@ -47,4 +56,5 @@ func main() {
 		}
 	}
 	fmt.Println("Application terminated")
+	defer color.Unset()
 }

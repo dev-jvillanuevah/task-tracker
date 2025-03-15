@@ -2,6 +2,7 @@ package taskmanager
 
 import (
 	"fmt"
+	"slices"
 	"time"
 
 	"github.com/dev-jvillanuevah/task-tracker/common"
@@ -81,24 +82,56 @@ func (t *Client) GetTasks() []*common.Task {
 	return t.tasks
 }
 
-func (t *Client) ListTasks(status *common.TaskStatus) {
+func (t *Client) ListTasks(status *common.TaskStatus) error {
 	tasksToShow := t.tasks
-	if status != nil {
+	if status != nil && *status != "" {
+		if !slices.Contains[[]common.TaskStatus, common.TaskStatus](common.ValidStatus, *status) {
+			return fmt.Errorf("invalid task status")
+		}
 		tasksToShow = t.filterTasksByStatus(status)
 	}
 	if len(tasksToShow) == 0 {
-		fmt.Println("No tasks found")
-		return
+		fmt.Println("no tasks found")
+		return nil
 	}
 	for _, task := range tasksToShow {
 		fmt.Printf("%d - %s - %s\n", task.ID, task.Description, task.GetStatus())
 	}
+	return nil
+}
+
+func (t *Client) MarkInProgress(id int) error {
+	task := t.findTask(id)
+	if task.Status != common.StatusDone {
+		return fmt.Errorf("error updating task %d with status %s, the status should be %s", task.ID, task.Status, common.StatusToDo)
+	}
+	task.Status = common.StatusInProgress
+	err := t.saveTasks()
+	if err != nil {
+		return fmt.Errorf("error updating task status to in-progress: %w", err)
+	}
+	fmt.Printf("Task marked in-progress successfully (%d)\n", id)
+	return nil
+}
+
+func (t *Client) MarkDone(id int) error {
+	task := t.findTask(id)
+	if task.Status != common.StatusInProgress {
+		return fmt.Errorf("error updating task %d with status %s, the status should be %s", task.ID, task.Status, common.StatusInProgress)
+	}
+	task.Status = common.StatusDone
+	err := t.saveTasks()
+	if err != nil {
+		return fmt.Errorf("error updating task status to done: %w", err)
+	}
+	fmt.Printf("Task marked done successfully (%d)\n", id)
+	return nil
 }
 
 func (t *Client) filterTasksByStatus(status *common.TaskStatus) []*common.Task {
 	var tasks []*common.Task
 	for _, task := range t.tasks {
-		if &task.Status != status {
+		if task.Status != *status {
 			continue
 		}
 		tasks = append(tasks, task)

@@ -19,3 +19,5 @@ const (
 	StatusInProgress TaskStatus = "in-progress"
 	StatusDone       TaskStatus = "done"
 )
+
+var ValidStatus = []TaskStatus{StatusToDo, StatusInProgress, StatusDone}
